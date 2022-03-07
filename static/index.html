@@ -53,9 +53,9 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     //XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
     xhr.open("POST", url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json')
-    xhr.setRequestHeader('Accept', 'application/json')
-    xhr.send(JSON.stringify(objects))
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.send(JSON.stringify(objects));
 }
 
 
@@ -144,7 +144,7 @@ function addEntity(entity, data) {
     world[entity] = data;
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just  modified!
-
+    sendJSONXMLHTTPRequest('/entity/' + entity, data, (response) => {})
 }
 
 var counter = 0;
@@ -269,6 +269,14 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
     drawFrame();
+    var xhr = new XMLHttpRequest();
+    xhr.onload = () => {
+        world = JSON.parse(xhr.responseText);
+        drawNextFrame();
+        drawFrame();
+    }
+    xhr.open("GET", "/world");
+    xhr.send()
 }
 
 // 30 frames per second
